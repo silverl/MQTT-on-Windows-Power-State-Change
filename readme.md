@@ -1,4 +1,4 @@
-# Notify-OnWake Powershell Script
+# Send-MqttOnPowerStateChange Powershell Script
 
 ## About
 
@@ -25,7 +25,7 @@ Set up the following environment variables with the appropriate values:
 * `MQTT_USERNAME`
 * `MQTT_PWD`
 
-## Create Task Scheduler Job
+## Wake Up - Create Task Scheduler Job
 
 Create a Windows Task Scheduler job with the following properties:
 
@@ -35,7 +35,7 @@ Run whether user is logged on or not.
 
 Running as SYSTEM or running with elevated privileges is not necessary.
 
-### Triggers
+### Triggers for Wake
 
 Create a trigger to begin the task "On an event"
 
@@ -45,13 +45,13 @@ Source: Power-Troubleshooter (be careful, there may be 2 of these in the list. I
 
 Event ID: 1
 
-### Actions
+### Actions for Wake
 
 Action: Start a program
 
 Program/script: `powershell.exe`
 
-Arguments: `-ExecutionPolicy Bypass –NoProfile –Command "& {C:\Code\NotifyOnWake\Notify-OnWake.ps1; exit $LastExitCode}" > C:\code\NotifyOnWake\out.log`
+Arguments: `-ExecutionPolicy Bypass –NoProfile –Command "& {C:\Code\NotifyOnWake\Send-MqttOnPowerStateChange.ps1 -State wake; exit $LastExitCode}" >> %USERPROFILE%\wake.log`
 
 This structure for running scheduled tasks is what I've found works well to get the scripts last exit code reported back to Task Scheduler. Using powershell.exe's `-File` argument results in powershell.exe's exit code to be reported, not the script.
 
@@ -60,3 +60,25 @@ This structure for running scheduled tasks is what I've found works well to get 
 Check: Stop the task if it runs longer than 1 hour.
 
 Shouldn't be necessary since the script has a number of retries embedded, but just in case...
+
+## Sleep - Create Scheduled Task
+
+Only the following are different from the first task.
+
+### Triggers for Sleep
+
+Create a trigger to begin the task "On an event"
+
+Log: System
+
+Source: Kernel-Power
+
+Event ID: 187
+
+### Actions for Sleep
+
+Action: Start a program
+
+Program/script: `powershell.exe`
+
+Arguments: `-ExecutionPolicy Bypass –NoProfile –Command "& {C:\Code\NotifyOnWake\Send-MqttOnPowerStateChange.ps1 -State sleep; exit $LastExitCode}" >> %USERPROFILE%\sleep.log`
