@@ -18,8 +18,12 @@ In Powershell, the DLL can then be included via Add-Type -Path "C:\lib\M2Mqtt.4.
 
 ### Set Environment Variables
 
-If your MQTT requires username and password as mine does, then set up the following environment variables with the appropriate values: `MQTT_USERNAME` and `MQTT_PWD`
+Set up the following environment variables with the appropriate values:
 
+* `MQTT_HOST`
+* `MQTT_PORT`
+* `MQTT_USERNAME`
+* `MQTT_PWD`
 
 ## Create Task Scheduler Job
 
