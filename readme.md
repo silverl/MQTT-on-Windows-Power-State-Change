@@ -8,6 +8,12 @@ If your MQTT requires username and password as mine does, then set up the follow
 
 Create a Windows Task Scheduler job with the following properties:
 
+## General
+
+Run whether user is logged on or not.
+
+Running as SYSTEM or running with elevated privileges is not necessary.
+
 ## Triggers
 
 Create a trigger to begin the task "On an event"
